@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidatorFn } from '@angular/forms';
 import { FirstKeyPipe } from '../../shared/pipes/first-key.pipe';
 import { AuthService } from '../../shared/services/auth.service';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { Toast, ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -17,9 +16,10 @@ export class RegistrationComponent {
   
   //Injecting the form builder to this Class Constructor
   //Inside the constructor we can receive the toaster service
-  // and the http service 
+  // and the http service
   constructor(public formBuilder : FormBuilder, private service : AuthService,
-    private toastr : ToastrService) {}  
+    private toastr : ToastrService
+) {}  
 
   isSubmitted:boolean = false;
    //below this aformgroup object 
@@ -59,13 +59,36 @@ export class RegistrationComponent {
             if(res.succeeded){
               this.form.reset();
               this.isSubmitted = false;
-              this.toastr.success('New user created!', 'Registration Successful')
+              this.toastr.success('The new user was successfully added!','Registration Successful')
             }
-            else
-             console.log('response:', res);
+              console.log(res);
           },
           
-          error:err=>console.log('error', err)
+          error: err => {
+            if(err.error.errors)
+            err.error.errors.forEach((x:any) =>
+            {	
+              switch(x.code){
+                case "DuplicateUserName":
+                break;
+                case "DuplicateEmail":
+                this.toastr.error('Email is already taken.', 'Registration Failed')
+                break;
+                default:
+                  this.toastr.error('Contact the developer', 'Registration Failed')
+                  console.log(x);
+                break;
+                }
+             })
+              
+            
+            
+            
+            
+            
+            
+
+            }
         }
         )
 
