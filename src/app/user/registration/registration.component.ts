@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidatorFn } from '@angular/forms';
+import { FirstKeyPipe } from '../../shared/pipes/first-key.pipe';
 
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule,CommonModule,FirstKeyPipe],
   templateUrl: './registration.component.html',
   styles: ``
 })
@@ -40,7 +41,7 @@ export class RegistrationComponent {
     email : ['',[ Validators.required, Validators.email]],
     password : ['',[Validators.required,
                     Validators.minLength,
-                    Validators.pattern(/(?=.*[^a-zA-Z0-9])/)]],
+                    Validators.pattern(/(?=.*[^a-zA-Z0-9 ])/)]],
     confirmPassword :['', Validators.required]
   },{validators:this.passwordMatchValidator})
 
