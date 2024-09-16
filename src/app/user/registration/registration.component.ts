@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidatorFn } from '@angular/forms';
 import { FirstKeyPipe } from '../../shared/pipes/first-key.pipe';
+import { AuthService } from '../../shared/services/auth.service';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { Toast, ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-registration',
@@ -13,8 +16,10 @@ import { FirstKeyPipe } from '../../shared/pipes/first-key.pipe';
 export class RegistrationComponent {
   
   //Injecting the form builder to this Class Constructor
-  constructor(public formBuilder : FormBuilder)
-  {}
+  //Inside the constructor we can receive the toaster service
+  // and the http service 
+  constructor(public formBuilder : FormBuilder, private service : AuthService,
+    private toastr : ToastrService) {}  
 
   isSubmitted:boolean = false;
    //below this aformgroup object 
@@ -47,6 +52,29 @@ export class RegistrationComponent {
 
   onSubmit() {
     this.isSubmitted= true;
+     if(this.form.valid){
+        this.service.createUser(this.form.value)
+        .subscribe({
+          next:(res:any) => {
+            if(res.succeeded){
+              this.form.reset();
+              this.isSubmitted = false;
+              this.toastr.success('New user created!', 'Registration Successful')
+            }
+            else
+             console.log('response:', res);
+          },
+          
+          error:err=>console.log('error', err)
+        }
+        )
+
+
+     }
+
+
+
+
     console.log(this.form.value);
   }
 
