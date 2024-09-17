@@ -104,7 +104,7 @@ export class RegistrationComponent {
 
   hasDisplayableError(controlName: string): Boolean{
     const control = this.form.get(controlName);
-    return Boolean(control?.invalid) && (this.isSubmitted) || Boolean(control?.touched);
+    return Boolean(control?.invalid) && (this.isSubmitted) || Boolean(control?.touched) || Boolean(control?.dirty);
   }
 
 
